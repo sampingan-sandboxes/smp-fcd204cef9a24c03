@@ -1,0 +1,32 @@
+service: smp-auth-sandbox
+
+frameworkVersion: '3'
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  environment:
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID, ''}
+    COGNITO_APP_CLIENT_ID: ${env:COGNITO_APP_CLIENT_ID, ''}
+    COGNITO_REGION: ${env:COGNITO_REGION, 'ap-southeast-1'}
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+functions:
+  health:
+    handler: src/base/handlers/health.handler
+    events:
+      - httpApi:
+          path: /health
+          method: get
+
+  me:
+    handler: src/components/auth/handlers/me.handler
+    events:
+      - httpApi:
+          path: /me
+          method: get
